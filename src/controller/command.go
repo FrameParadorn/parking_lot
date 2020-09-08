@@ -24,7 +24,7 @@ var parking model.Parking
 
 const cmdInv = "Command invalid."
 
-func Run(command *string) {
+func Run(command *string, newline bool) {
 
 	cmd, arg := splitCommand(command)
 	if commands[cmd] == nil {
@@ -37,7 +37,9 @@ func Run(command *string) {
 		fmt.Println(err)
 	}
 
-	fmt.Println()
+	if newline {
+		fmt.Println()
+	}
 
 }
 

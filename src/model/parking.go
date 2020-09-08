@@ -53,3 +53,22 @@ func (p *Parking) Allocate(car *Car) error {
 	return nil
 
 }
+
+func (p *Parking) Leave(slotNo int) error {
+
+	found := false
+	for i, slot := range p.Slots {
+		if slot.no == slotNo {
+			p.Slots[i].car = Car{}
+			found = true
+		}
+	}
+
+	if found {
+		fmt.Printf("Slot number %d is free\n", slotNo)
+		return nil
+	}
+
+	return fmt.Errorf("Slot number %d not found", slotNo)
+
+}

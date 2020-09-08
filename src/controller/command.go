@@ -11,6 +11,7 @@ import (
 var commands = map[string]func(args []string) error{
 	"create_parking_lot": createSlot,
 	"park":               allocateSlot,
+	"leave":              leaveSlot,
 }
 
 var parking model.Parking
@@ -28,6 +29,8 @@ func Run(command *string) {
 		fmt.Println(err)
 	}
 
+	fmt.Println(parking.Slots)
+
 }
 
 func splitCommand(command *string) (string, []string) {
@@ -43,7 +46,7 @@ func splitCommand(command *string) (string, []string) {
 func createSlot(args []string) error {
 	slotQty, err := strconv.Atoi(args[0])
 	if err != nil {
-		fmt.Printf("Create slot error : %s", err)
+		fmt.Printf("Create slot error : %s\n", err)
 		return err
 	}
 	parking.CreateSlot(slotQty)
@@ -57,12 +60,16 @@ func allocateSlot(args []string) error {
 		Colour: args[1],
 	}
 
-	err := parking.Allocate(&car)
+	return parking.Allocate(&car)
+
+}
+
+func leaveSlot(args []string) error {
+	slotNo, err := strconv.Atoi(args[0])
 	if err != nil {
+		fmt.Printf("Leave slot error : %s\n", err)
 		return err
 	}
 
-	fmt.Println(parking.Slots)
-	return nil
-
+	return parking.Leave(slotNo)
 }

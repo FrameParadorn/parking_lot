@@ -27,8 +27,8 @@ func Run(command *string) {
 	fmt.Println("Command invalid.\n")
 }
 
-func createSlot(arg interface{}) error {
-	slotQty, err := strconv.Atoi(arg.(string))
+func createSlot(args interface{}) error {
+	slotQty, err := strconv.Atoi(args.([]string)[0])
 	if err != nil {
 		fmt.Println("Create slot error : %s", err)
 		return err
@@ -38,11 +38,12 @@ func createSlot(arg interface{}) error {
 	return nil
 }
 
-func splitCommand(command *string) (string, string) {
+func splitCommand(command *string) (string, []string) {
 	s := strings.TrimSuffix(*command, "\n")
 	result := strings.Split(s, " ")
 	if len(result) == 1 {
-		return result[0], ""
+		return result[0], nil
 	}
-	return result[0], result[1]
+	args := result[1:]
+	return result[0], args
 }

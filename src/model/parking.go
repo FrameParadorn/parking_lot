@@ -1,7 +1,5 @@
 package model
 
-import "fmt"
-
 type Parking struct {
 	slots []slot
 }
@@ -19,5 +17,4 @@ func (p *Parking) CreateSlot(quantity int) {
 		})
 	}
 
-	fmt.Printf("Created a parking lot with %d slots\n", quantity)
 }

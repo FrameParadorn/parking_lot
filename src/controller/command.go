@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/FrameParadorn/parkinglot/model"
+	"github.com/FrameParadorn/parkinglot/src/model"
 )
 
 var commands = map[string]func(args []string) error{

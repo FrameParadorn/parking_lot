@@ -10,6 +10,7 @@ import (
 
 var commands = map[string]func(args []string) error{
 	"create_parking_lot": createSlot,
+	"park":               allocateSlot,
 }
 
 var parking model.Parking
@@ -17,14 +18,16 @@ var parking model.Parking
 func Run(command *string) {
 
 	cmd, arg := splitCommand(command)
-	if commands[cmd] != nil {
-		err := commands[cmd](arg)
-		if err == nil {
-			return
-		}
+	if commands[cmd] == nil {
+		fmt.Println("Command invalid.")
+		return
 	}
 
-	fmt.Println("Command invalid.")
+	err := commands[cmd](arg)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 }
 
 func splitCommand(command *string) (string, []string) {
@@ -46,4 +49,20 @@ func createSlot(args []string) error {
 	parking.CreateSlot(slotQty)
 	fmt.Printf("Created a parking lot with %d slots\n", slotQty)
 	return nil
+}
+
+func allocateSlot(args []string) error {
+	car := model.Car{
+		RegNo:  args[0],
+		Colour: args[1],
+	}
+
+	err := parking.Allocate(&car)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(parking.Slots)
+	return nil
+
 }

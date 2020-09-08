@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -16,6 +17,7 @@ var commands = map[string]func(args []string) error{
 	"registration_numbers_for_cars_with_colour": showRegNoByColour,
 	"slot_numbers_for_cars_with_colour":         showSlotNoByColour,
 	"slot_number_for_registration_number":       showSlotByRegNo,
+	"exit":                                      exit,
 }
 
 var parking model.Parking
@@ -52,8 +54,7 @@ func splitCommand(command *string) (string, []string) {
 func createSlot(args []string) error {
 	slotQty, err := strconv.Atoi(args[0])
 	if err != nil {
-		fmt.Printf("Create slot error : %s\n", err)
-		return err
+		return fmt.Errorf("Create slot error : %s\n", err)
 	}
 	parking.CreateSlot(slotQty)
 	fmt.Printf("Created a parking lot with %d slots\n", slotQty)
@@ -62,8 +63,7 @@ func createSlot(args []string) error {
 
 func allocateSlot(args []string) error {
 	if len(args) != 2 {
-		fmt.Println(cmdInv)
-		return nil
+		return fmt.Errorf(cmdInv)
 	}
 	car := model.Car{
 		RegNo:  args[0],
@@ -77,22 +77,25 @@ func allocateSlot(args []string) error {
 func leaveSlot(args []string) error {
 	slotNo, err := strconv.Atoi(args[0])
 	if err != nil {
-		fmt.Printf("Leave slot error : %s\n", err)
-		return err
+		return fmt.Errorf("Leave slot error : %s\n", err)
 	}
 
 	return parking.Leave(slotNo)
 }
 
 func showStatusSlot(args []string) error {
-	parking.Status()
+	slots := parking.Status()
+
+	fmt.Printf("Slot No.  Registrator No.    Colour\n")
+	for _, slot := range slots {
+		fmt.Printf("%d\t  %s\t     %s\n", slot.No, slot.Car.RegNo, slot.Car.Colour)
+	}
 	return nil
 }
 
 func showRegNoByColour(args []string) error {
 	if len(args) != 1 {
-		fmt.Println(cmdInv)
-		return nil
+		return fmt.Errorf(cmdInv)
 	}
 
 	slots := parking.Find("Colour", args[0])
@@ -108,8 +111,7 @@ func showRegNoByColour(args []string) error {
 
 func showSlotNoByColour(args []string) error {
 	if len(args) != 1 {
-		fmt.Println(cmdInv)
-		return nil
+		return fmt.Errorf(cmdInv)
 	}
 
 	slots := parking.Find("SlotNo", args[0])
@@ -125,8 +127,7 @@ func showSlotNoByColour(args []string) error {
 
 func showSlotByRegNo(args []string) error {
 	if len(args) != 1 {
-		fmt.Println(cmdInv)
-		return nil
+		return fmt.Errorf(cmdInv)
 	}
 
 	slots := parking.Find("RegNo", args[0])
@@ -135,7 +136,12 @@ func showSlotByRegNo(args []string) error {
 		return fmt.Errorf("Not found")
 	}
 
-	fmt.Printf("%d", slots[0].No)
+	fmt.Printf("%d\n", slots[0].No)
 	return nil
 
+}
+
+func exit(args []string) error {
+	os.Exit(0)
+	return nil
 }

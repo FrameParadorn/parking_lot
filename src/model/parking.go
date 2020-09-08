@@ -73,15 +73,15 @@ func (p *Parking) Leave(slotNo int) error {
 
 }
 
-func (p *Parking) Status() {
+func (p *Parking) Status() []slot {
 
-	fmt.Printf("Slot No.  Registrator No.    Colour\n")
+	result := []slot{}
 	for _, slot := range p.Slots {
 		if (slot.Car != Car{}) {
-			fmt.Printf("%d\t  %s\t     %s\n", slot.No, slot.Car.RegNo, slot.Car.Colour)
+			result = append(result, slot)
 		}
 	}
-	fmt.Println("")
+	return result
 
 }
 

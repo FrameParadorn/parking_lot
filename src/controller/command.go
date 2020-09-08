@@ -14,6 +14,8 @@ var commands = map[string]func(args []string) error{
 	"leave":              leaveSlot,
 	"status":             showStatusSlot,
 	"registration_numbers_for_cars_with_colour": showRegNoByColour,
+	"slot_numbers_for_cars_with_colour":         showSlotNoByColour,
+	"slot_number_for_registration_number":       showSlotByRegNo,
 }
 
 var parking model.Parking
@@ -33,7 +35,7 @@ func Run(command *string) {
 		fmt.Println(err)
 	}
 
-	fmt.Println(parking.Slots)
+	fmt.Println()
 
 }
 
@@ -100,6 +102,40 @@ func showRegNoByColour(args []string) error {
 		}
 		fmt.Printf("%s", slot.Car.RegNo)
 	}
-	fmt.Println("")
+	fmt.Println()
 	return nil
+}
+
+func showSlotNoByColour(args []string) error {
+	if len(args) != 1 {
+		fmt.Println(cmdInv)
+		return nil
+	}
+
+	slots := parking.Find("SlotNo", args[0])
+	for i, slot := range slots {
+		if i != 0 {
+			fmt.Printf(", ")
+		}
+		fmt.Printf("%d", slot.No)
+	}
+	fmt.Println()
+	return nil
+}
+
+func showSlotByRegNo(args []string) error {
+	if len(args) != 1 {
+		fmt.Println(cmdInv)
+		return nil
+	}
+
+	slots := parking.Find("RegNo", args[0])
+
+	if len(slots) == 0 {
+		return fmt.Errorf("Not found")
+	}
+
+	fmt.Printf("%d", slots[0].No)
+	return nil
+
 }

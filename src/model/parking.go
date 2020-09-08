@@ -97,11 +97,27 @@ func (p *Parking) FindByColour(colour string) []slot {
 
 }
 
+func (p *Parking) FindByRegNo(regNo string) []slot {
+	result := []slot{}
+	for _, slot := range p.Slots {
+		if slot.Car.RegNo == regNo {
+			result = append(result, slot)
+		}
+	}
+	return result
+
+}
+
 func (p *Parking) Find(column string, keyword string) []slot {
 
 	switch column {
 	case "Colour":
+		fallthrough
+	case "SlotNo":
 		return p.FindByColour(keyword)
+	default:
+		return p.FindByRegNo(keyword)
+
 	}
 
 	return []slot{}

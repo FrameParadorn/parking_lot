@@ -12,15 +12,19 @@ var commands = map[string]func(args []string) error{
 	"create_parking_lot": createSlot,
 	"park":               allocateSlot,
 	"leave":              leaveSlot,
+	"status":             showStatusSlot,
+	"registration_numbers_for_cars_with_colour": showRegNoByColour,
 }
 
 var parking model.Parking
+
+const cmdInv = "Command invalid."
 
 func Run(command *string) {
 
 	cmd, arg := splitCommand(command)
 	if commands[cmd] == nil {
-		fmt.Println("Command invalid.")
+		fmt.Println(cmdInv)
 		return
 	}
 
@@ -55,6 +59,10 @@ func createSlot(args []string) error {
 }
 
 func allocateSlot(args []string) error {
+	if len(args) != 2 {
+		fmt.Println(cmdInv)
+		return nil
+	}
 	car := model.Car{
 		RegNo:  args[0],
 		Colour: args[1],
@@ -72,4 +80,26 @@ func leaveSlot(args []string) error {
 	}
 
 	return parking.Leave(slotNo)
+}
+
+func showStatusSlot(args []string) error {
+	parking.Status()
+	return nil
+}
+
+func showRegNoByColour(args []string) error {
+	if len(args) != 1 {
+		fmt.Println(cmdInv)
+		return nil
+	}
+
+	slots := parking.Find("Colour", args[0])
+	for i, slot := range slots {
+		if i != 0 {
+			fmt.Printf(", ")
+		}
+		fmt.Printf("%s", slot.Car.RegNo)
+	}
+	fmt.Println("")
+	return nil
 }

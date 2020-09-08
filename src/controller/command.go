@@ -8,7 +8,7 @@ import (
 	"github.com/FrameParadorn/parkinglot/model"
 )
 
-var commands = map[string]func(arg interface{}) error{
+var commands = map[string]func(args []string) error{
 	"create_parking_lot": createSlot,
 }
 
@@ -24,18 +24,7 @@ func Run(command *string) {
 		}
 	}
 
-	fmt.Println("Command invalid.\n")
-}
-
-func createSlot(args interface{}) error {
-	slotQty, err := strconv.Atoi(args.([]string)[0])
-	if err != nil {
-		fmt.Println("Create slot error : %s", err)
-		return err
-	}
-	parking.CreateSlot(slotQty)
-	fmt.Printf("Created a parking lot with %d slots\n", slotQty)
-	return nil
+	fmt.Println("Command invalid.")
 }
 
 func splitCommand(command *string) (string, []string) {
@@ -46,4 +35,15 @@ func splitCommand(command *string) (string, []string) {
 	}
 	args := result[1:]
 	return result[0], args
+}
+
+func createSlot(args []string) error {
+	slotQty, err := strconv.Atoi(args[0])
+	if err != nil {
+		fmt.Printf("Create slot error : %s", err)
+		return err
+	}
+	parking.CreateSlot(slotQty)
+	fmt.Printf("Created a parking lot with %d slots\n", slotQty)
+	return nil
 }

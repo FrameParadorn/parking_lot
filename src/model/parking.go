@@ -3,7 +3,8 @@ package model
 import "fmt"
 
 type Parking struct {
-	Slots []slot
+	Slots      []slot
+	CountLeave int
 }
 
 type slot struct {
@@ -66,6 +67,7 @@ func (p *Parking) Leave(slotNo int) error {
 
 	if found {
 		fmt.Printf("Slot number %d is free\n", slotNo)
+		p.CountLeave++
 		return nil
 	}
 

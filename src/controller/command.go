@@ -13,6 +13,7 @@ var commands = map[string]func(args []string) error{
 	"create_parking_lot": createSlot,
 	"park":               allocateSlot,
 	"leave":              leaveSlot,
+	"leave_count":        showStatusLeaveCount,
 	"status":             showStatusSlot,
 	"registration_numbers_for_cars_with_colour": showRegNoByColour,
 	"slot_numbers_for_cars_with_colour":         showSlotNoByColour,
@@ -145,5 +146,10 @@ func showSlotByRegNo(args []string) error {
 
 func exit(args []string) error {
 	os.Exit(0)
+	return nil
+}
+
+func showStatusLeaveCount(args []string) error {
+	fmt.Println(parking.CountLeave)
 	return nil
 }
